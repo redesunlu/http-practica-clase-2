@@ -8,7 +8,7 @@ from socketserver import ThreadingMixIn
 
 urllib3.disable_warnings()
 
-hostname = 'es.wikipedia.org'
+hostname = 'www.unlu.edu.ar'
 port = 8080
 
 def get_headers() -> dict:
@@ -35,14 +35,13 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
             req_header.update(get_headers())  # Actualiza los elementos del diccionario "pisando" los actuales
 
             print(url)  # Imprimo la petición que voy a hacer al servidor
-            resp = requests.get(url, headers=req_header, verify=False, stream=True)
+            resp = requests.get(url, headers=req_header, verify=False)
             sent = True
 
             self.send_response(resp.status_code)  # Enviar el status code de la petición a nuestro cliente
             self.send_resp_headers(resp)  # Enviar los headers de la petición a nuestro cliente
-            if body:  # Si nos hicieron una petición GET, escribimos el mensaje obtenido al cliente
-                msg = resp.text  # Copio el body de la petición a una variable
-                self.wfile.write(msg.encode(encoding=resp.encoding or resp.apparent_encoding or 'utf-8'))
+            if body:  # Si devolvemos un body, escribo hacia el cliente el contenido en bytes del body obtenido
+                self.wfile.write(resp.content)  # (requests se ocupa del Content-Encoding+Content-Type automáticamente)
             return
         finally:
             if not sent:
