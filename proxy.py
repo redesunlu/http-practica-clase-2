@@ -30,7 +30,7 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self, body=True):
         sent = False
         try:
-            url = 'https://{}{}'.format(hostname, self.path)  # armo el string con la URL real a la cual invocar
+            url = f'https://{hostname}{self.path}'  # armo el string con la URL real a la cual invocar
             req_header = dict(self.headers)  # En principio, seteamos los mismos headers del cliente
             req_header.update(get_headers())  # Actualiza los elementos del diccionario "pisando" los actuales
 
